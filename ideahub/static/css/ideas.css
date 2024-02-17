@@ -1,0 +1,60 @@
+.card-container {
+    display: flex;
+}
+
+
+.idea-container {
+    padding-left: 2rem;
+    width: 60%;
+}
+
+.idea {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    p {
+        margin: 0px;
+    }
+}
+
+.votes {
+    display: flex;
+    justify-content: flex-end;
+
+    form {
+        margin: 0px
+    }
+
+    button {
+        padding: 0px;
+        margin-left: 10px;
+    }
+}
+
+.circle-icon {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    /* cursor: pointer; */
+    color: white;
+    font-weight: bold;
+    opacity: 30%;
+}
+
+.like-icon {
+    background-color: green;
+}
+
+.dislike-icon {
+    background-color: red;
+}
+
+.chosen-vote {
+    opacity: 100%;
+}

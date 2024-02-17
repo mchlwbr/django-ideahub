@@ -1,0 +1,27 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+name = "ideahub"
+version = "0.0.1"
+requires-python = ">= 3.10"
+classifiers = [
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = ["django>=5.0", "crispy-bootstrap5", "psycopg2-binary"]
+
+[project.optional-dependencies]
+dev = ["black", "isort", "pip-tools", "pre-commit", "pytest-django"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ideahub"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "ideahub_app.settings"
+python_files = ["test*.py"]
