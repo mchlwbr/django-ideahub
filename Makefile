@@ -21,3 +21,9 @@ requirements-dev.txt: pyproject.toml
 	${PIP_COMPILE_ARGS} \
 	--output-file requirements-dev.txt \
 	--extra dev
+
+requirements-prod.txt: pyproject.toml
+	pip-compile \
+	${PIP_COMPILE_ARGS} \
+	--output-file requirements-prod.txt \
+	--extra prod
