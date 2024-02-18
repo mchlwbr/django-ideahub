@@ -25,6 +25,10 @@ click==8.1.7
     #   -c constraint.txt
     #   black
     #   pip-tools
+coverage==7.4.1
+    # via
+    #   -c constraint.txt
+    #   pytest-cov
 crispy-bootstrap5==2023.10
     # via
     #   -c constraint.txt
@@ -106,7 +110,12 @@ pyproject-hooks==1.0.0
 pytest==8.0.1
     # via
     #   -c constraint.txt
+    #   pytest-cov
     #   pytest-django
+pytest-cov==4.1.0
+    # via
+    #   -c constraint.txt
+    #   ideahub (pyproject.toml)
 pytest-django==4.8.0
     # via
     #   -c constraint.txt
