@@ -51,6 +51,15 @@ class Test_set_username:
         assert User.objects.count() == 1
         assert User.objects.get(name=username)
 
+    def test_redirect_to_ideas_on_username(self, client):
+        url = reverse("set_username", kwargs={"collection_name": collection_name})
+        url_with_name = f"{url}?name={username}"
+        response = client.get(url_with_name)
+
+        assert response["Location"] == reverse(
+            "ideas", kwargs={"collection_name": collection_name, "username": username}
+        )
+
     def test_created_collection_is_lowercase(self, client):
         collection_name_uppercase = collection_name.upper()
         url = reverse(
@@ -121,6 +130,22 @@ class Test_ideas:
         response = client.post(url, data)
 
         assert Idea.objects.count() == 1
+
+    @pytest.mark.django_db(transaction=True)
+    def test_dont_create_duplicate_idea(self, client):
+        # post idea
+        self.test_created_idea_via_post(client)
+
+        # try to post same idea again
+        url = reverse(
+            "ideas",
+            kwargs={"collection_name": collection_name, "username": username},
+        )
+        data = {"title": "my_ideas_title", "description": "my_ideas_description"}
+        response = client.post(url, data)
+
+        assert Idea.objects.count() == 1
+        assert "already exists in collection" in str(response.content)
 
     def test_created_idea_autofocus(self, client):
         url = reverse(
