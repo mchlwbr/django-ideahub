@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  web:
+    build: ./
+    command: gunicorn ideahub_app.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    environment:
+      - MODE=production
+      - SECRET_KEY=change_me
+      - TRUSTED_ORIGINS=https://www.your-app-domain.com
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=ideahub_prod
+      - SQL_USER=ideahub
+      - SQL_PASSWORD=ideahub
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - DATABASE=postgres
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=ideahub
+      - POSTGRES_PASSWORD=ideahub
+      - POSTGRES_DB=ideahub_prod
+
+volumes:
+  postgres_data:
