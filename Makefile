@@ -1,19 +1,23 @@
-reqs: requirements.txt requirements-dev.txt
+reqs: constraint.txt requirements.txt requirements-dev.txt
+
+PIP_COMPILE_ARGS=--no-emit-index-url \
+	--constraint=constraint.txt \
+	--strip-extras \
+	--allow-unsafe
+
+constraint.txt: pyproject.toml
+	pip-compile \
+	${PIP_COMPILE_ARGS} \
+	--all-extras  \
+	--output-file constraint.txt
 
 requirements.txt: pyproject.toml
 	pip-compile \
-	--generate-hashes \
-	--no-emit-index-url \
-	--strip-extras \
-	--output-file requirements.txt \
-	pyproject.toml
+	${PIP_COMPILE_ARGS} \
+	--output-file requirements.txt
 
 requirements-dev.txt: pyproject.toml
-	echo "--constraint $(shell pwd)/requirements.txt" | \
 	pip-compile \
-	--generate-hashes \
-	--no-emit-index-url \
+	${PIP_COMPILE_ARGS} \
 	--output-file requirements-dev.txt \
-	--extra dev \
-	- \
-	pyproject.toml
+	--extra dev
