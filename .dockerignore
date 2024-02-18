@@ -1,0 +1,16 @@
+.git
+.pytest_cache
+.venv
+.vscode
+*__pycache__*
+
+static
+tests
+
+.dockerignore
+.gitignore
+.python-version
+db.sqlite3
+docker-compose.yml
+Dockerfile
+pyproject.toml
