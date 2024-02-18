@@ -127,6 +127,10 @@ wheel==0.42.0
     # via
     #   -c constraint.txt
     #   pip-tools
+whitenoise==6.6.0
+    # via
+    #   -c constraint.txt
+    #   ideahub (pyproject.toml)
 
 # The following packages are considered to be unsafe in a requirements file:
 pip==24.0
