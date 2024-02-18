@@ -47,6 +47,10 @@ filelock==3.13.1
     # via
     #   -c constraint.txt
     #   virtualenv
+gunicorn==21.2.0
+    # via
+    #   -c constraint.txt
+    #   ideahub (pyproject.toml)
 identify==2.5.34
     # via
     #   -c constraint.txt
@@ -72,6 +76,7 @@ packaging==23.2
     #   -c constraint.txt
     #   black
     #   build
+    #   gunicorn
     #   pytest
 pathspec==0.12.1
     # via

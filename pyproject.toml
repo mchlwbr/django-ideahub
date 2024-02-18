@@ -23,6 +23,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["black", "isort", "pip-tools", "pre-commit", "pytest-django"]
+prod = ["gunicorn"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["ideahub"]
