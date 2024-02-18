@@ -13,3 +13,13 @@ vote on them to get a ranking.
 ## Preview
 
 ![Ideas](./doc/images/ideas.png)
+
+## Container
+
+To spin up the container simply run
+
+```terminal
+docker compose up --build
+```
+
+then visit http://127.0.0.1:8000/ideahub/.
