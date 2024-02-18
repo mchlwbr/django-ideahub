@@ -30,6 +30,9 @@ class User(models.Model):
         self.name = self.name.lower()
         return super(User, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.collection.name}_{self.name}"
+
 
 class Idea(models.Model):
     title = models.CharField(max_length=255)
@@ -42,6 +45,9 @@ class Idea(models.Model):
 
     class Meta:
         unique_together = ("title", "collection")
+
+    def __str__(self):
+        return f"{self.collection.name}_{self.title}"
 
     def fetch_likes(self):
         likes, dislikes = self.vote_set.aggregate(
@@ -62,6 +68,9 @@ class Vote(models.Model):
         constraints = [
             models.UniqueConstraint("user", "idea", name="vote_constraint"),
         ]
+
+    def __str__(self):
+        return f"{self.idea}_{self.user.name}"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
