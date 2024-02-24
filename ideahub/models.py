@@ -65,5 +65,12 @@ class Vote(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        self._update_ideas_likes()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self._update_ideas_likes()
+
+    def _update_ideas_likes(self):
         self.idea.fetch_likes()
         self.idea.save()

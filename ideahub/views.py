@@ -80,28 +80,25 @@ def ideas(request, collection_name: str, username: str):
     )
 
 
-def vote(request):
-    if request.method == "POST":
-        idea_id = request.POST.get("idea_id")
-        idea = Idea.objects.get(pk=idea_id)
+def like(request, idea_id: int, user_id: int):
+    return vote(request, idea_id, user_id, True)
 
-        user_id = request.POST.get("user_id")
-        user = User.objects.get(pk=user_id)
 
-        is_like_value = request.POST.get("is_like", "").lower()
-        is_like = (
-            True
-            if is_like_value == "true"
-            else False if is_like_value == "false" else None
-        )
+def dislike(request, idea_id: int, user_id: int):
+    return vote(request, idea_id, user_id, False)
 
-        vote, created = Vote.objects.get_or_create(user=user, idea=idea)
-        if is_like == vote.is_like:
-            vote.is_like = None
-        else:
-            vote.is_like = is_like
 
+def vote(request, idea_id: int, user_id: int, is_like: bool):
+    idea = Idea.objects.get(pk=idea_id)
+    user = User.objects.get(pk=user_id)
+
+    vote, created = Vote.objects.get_or_create(user=user, idea=idea)
+    if is_like == vote.is_like:
+        vote.delete()
+    else:
+        vote.is_like = is_like
         vote.save()
-        return redirect(
-            "ideas", collection_name=user.collection.name, username=user.name
-        )
+
+    # fetch idea with updated score
+    idea = Idea.objects.get(pk=idea_id)
+    return render(request, "ideahub/idea.html", {"idea": idea, "user": user})
