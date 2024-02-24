@@ -1,6 +1,5 @@
 {% extends "ideahub/base.html" %}
 {% load crispy_forms_tags %}
-{% load ideas_extra %}
 
 {% block body %}
 <div class="container">
@@ -26,45 +25,7 @@
             <h4>Submitted Ideas:</h4>
 
             {% for idea in ideas %}
-            <div class="idea" data-idea-id="{{ idea.id }}">
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <h3 style="margin: 0;">{{ idea.title|title }}</h3>
-                        <small>Submitter: {{ idea.user.name|title }}</small>
-                    </div>
-                    <div>Score: {{ idea.score }}</div>
-                </div>
-
-                {% if idea.description %}
-                <br>
-                <div>{{ idea.description|linebreaks|urlize }}</div>
-                {% endif %}
-
-                <div class="votes">
-                    {% users_vote idea user as the_users_vote %}
-                    <form method='POST' action="vote">
-                        {% csrf_token %}
-                        <input type="hidden" name="idea_id" value="{{ idea.id }}">
-                        <input type="hidden" name="user_id" value="{{ user.id }}">
-                        <button type="submit" name="is_like" value="true" class="btn">
-                            <div class="circle-icon like-icon {% if the_users_vote is True %} chosen-vote{% endif %}">
-                                +
-                            </div>
-                        </button>
-                    </form>
-                    <form method='POST' action="vote">
-                        {% csrf_token %}
-                        <input type="hidden" name="idea_id" value="{{ idea.id }}">
-                        <input type="hidden" name="user_id" value="{{ user.id }}">
-                        <button type="submit" name="is_like" value="false" class="btn">
-                            <div
-                                class="circle-icon dislike-icon {% if the_users_vote is False %} chosen-vote{% endif %}">
-                                -
-                            </div>
-                        </button>
-                    </form>
-                </div>
-            </div>
+                {% include "ideahub/idea.html" with idea=idea user=user %}
             {% endfor %}
         </div>
     </div>
