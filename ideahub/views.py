@@ -46,29 +46,12 @@ def set_username(request, collection_name: str):
     )
 
 
-def ideas(request, collection_name: str, username: str):
+def ideas(request, collection_name: str, username: str, idea_form=None):
     collection, created = Collection.objects.get_or_create(name=collection_name.lower())
     user, created = User.objects.get_or_create(
         name=username.lower(), collection=collection
     )
-
-    if request.method == "POST":
-        idea_form = IdeaForm(request.POST)
-        if idea_form.is_valid():
-            idea: Idea = idea_form.save(commit=False)
-            idea.user = user
-            idea.collection = collection
-            try:
-                idea.save()
-                # clear fields of idea_form
-                idea_form = IdeaForm()
-            except IntegrityError:
-                idea_form.add_error(
-                    "title",
-                    f"Idea '{idea_form.cleaned_data['title']}' already exists in collection '{collection.name}'",
-                )
-    else:
-        idea_form = IdeaForm()
+    idea_form = idea_form or IdeaForm()
 
     ideas = collection.idea_set.all()
     sorted_ideas = sorted(ideas, key=lambda idea: idea.score, reverse=True)
@@ -77,6 +60,35 @@ def ideas(request, collection_name: str, username: str):
         request,
         "ideahub/ideas.html",
         {"user": user, "ideas": sorted_ideas, "idea_form": idea_form},
+    )
+
+
+def submit_idea(request, user_id: int):
+    user = User.objects.get(pk=user_id)
+    idea_form = IdeaForm(request.POST)
+    if idea_form.is_valid():
+        idea: Idea = idea_form.save(commit=False)
+        idea.user = user
+        idea.collection = user.collection
+        try:
+            idea.save()
+            # clear fields of idea_form
+            idea_form = IdeaForm()
+        except IntegrityError:
+            idea_form.add_error(
+                "title",
+                f"Idea '{idea_form.cleaned_data['title']}' already exists in collection '{user.collection.name}'",
+            )
+    else:
+        return redirect(
+            "ideas", collection_name=user.collection.name, username=user.name
+        )
+
+    return ideas(
+        request=request,
+        collection_name=user.collection.name,
+        username=user.name,
+        idea_form=idea_form,
     )
 
 

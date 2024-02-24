@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-<div class="container">
+<div class="container" id="ideas">
     <div class="row">
         <div class="col-12">
             <h1 class="display-3">Welcome, {{ user.name|title }}!</h1>
@@ -14,7 +14,10 @@
 
         <div>
             <h4>Submit an Idea:</h4>
-            <form method="post">
+            <form
+                hx-post="{% url 'submit_idea' user.id %}"
+                hx-target="#ideas"
+                hx-swap="outerHTML">
                 {% csrf_token %}
                 {{ idea_form|crispy }}
                 <button type="submit" class="btn btn-primary ml-2">Submit</button>
