@@ -53,8 +53,7 @@ def ideas(request, collection_name: str, username: str, idea_form=None):
     )
     idea_form = idea_form or IdeaForm()
 
-    ideas = collection.idea_set.all()
-    sorted_ideas = sorted(ideas, key=lambda idea: idea.score, reverse=True)
+    sorted_ideas = collection.idea_set.all().order_by("-score")
 
     return render(
         request,
