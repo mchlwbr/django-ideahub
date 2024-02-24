@@ -23,3 +23,15 @@ docker compose up --build
 ```
 
 then visit http://127.0.0.1:8000/ideahub/.
+
+## Tests
+
+To execute the tests run 
+
+```terminal
+pytest
+```
+
+### Debugging tests
+
+To debug during tests, comment out `addopts` for `tool.pytest.ini_options` in `pyproject.toml`

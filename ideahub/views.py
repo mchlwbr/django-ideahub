@@ -67,8 +67,6 @@ def ideas(request, collection_name: str, username: str):
                     "title",
                     f"Idea '{idea_form.cleaned_data['title']}' already exists in collection '{collection.name}'",
                 )
-            except Exception:
-                pass
     else:
         idea_form = IdeaForm()
 

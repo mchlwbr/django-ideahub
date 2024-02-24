@@ -22,7 +22,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["black", "isort", "pip-tools", "pre-commit", "pytest-django"]
+dev = [
+    "black",
+    "isort",
+    "pip-tools",
+    "pre-commit",
+    "pytest-cov",
+    "pytest-django",
+]
 prod = ["gunicorn"]
 
 [tool.hatch.build.targets.wheel]
@@ -31,3 +38,7 @@ packages = ["ideahub"]
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "ideahub_app.settings"
 python_files = ["test*.py"]
+addopts = "--cov --cov-report xml --cov-report term-missing"
+
+[tool.coverage.run]
+source = ["ideahub"]
