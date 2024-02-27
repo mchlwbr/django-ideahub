@@ -1,3 +1,4 @@
+{% load django_htmx %}
 {% load static %}
 <html>
 
@@ -11,6 +12,8 @@
     {% block body %}
     CONTENT
     {% endblock %}
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+    {% django_htmx_script %}
 </body>
 
 </html>

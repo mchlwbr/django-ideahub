@@ -102,6 +102,13 @@ class Test_set_username:
 
 @pytest.mark.django_db
 class Test_ideas:
+    def setup_method(self, client):
+        collection = Collection.objects.create(name=collection_name)
+        self.users = [
+            User.objects.create(collection=collection, name=f"{username}_{i}")
+            for i in range(4)
+        ]
+
     def test_created_user_via_get(self, client):
         url = reverse(
             "ideas",
@@ -109,7 +116,7 @@ class Test_ideas:
         )
         response = client.get(url)
 
-        assert User.objects.count() == 1
+        assert User.objects.count() == len(self.users) + 1
         assert User.objects.get(name=username)
 
     def test_created_collection_via_get_with_username(self, client):
@@ -123,8 +130,8 @@ class Test_ideas:
 
     def test_created_idea_via_post(self, client):
         url = reverse(
-            "ideas",
-            kwargs={"collection_name": collection_name, "username": username},
+            "submit_idea",
+            kwargs={"user_id": self.users[0].id},
         )
         data = {"title": "my_ideas_title", "description": "my_ideas_description"}
         response = client.post(url, data)
@@ -138,8 +145,8 @@ class Test_ideas:
 
         # try to post same idea again
         url = reverse(
-            "ideas",
-            kwargs={"collection_name": collection_name, "username": username},
+            "submit_idea",
+            kwargs={"user_id": self.users[0].id},
         )
         data = {"title": "my_ideas_title", "description": "my_ideas_description"}
         response = client.post(url, data)
@@ -176,47 +183,24 @@ class Test_vote:
         ]
 
     def test_create_vote_via_post(self, client):
-        url = reverse("vote")
-        data = {
-            "idea_id": self.ideas[0].id,
-            "user_id": self.users[0].id,
-        }
-        response = client.post(url, data)
+        for is_like in [True, False]:
+            url = reverse(
+                "like" if is_like else "dislike",
+                kwargs={"idea_id": self.ideas[0].id, "user_id": self.users[0].id},
+            )
+            response = client.post(url)
 
-        assert Vote.objects.count() == 1
+            assert Vote.objects.filter(is_like=is_like).count() == 1
 
-    def test_dont_create_vote_via_get(self, client):
-        url = reverse("vote")
-        data = {
-            "idea_id": self.ideas[0].id,
-            "user_id": self.users[0].id,
-        }
-        with pytest.raises(ValueError) as exx:
-            response = client.get(url, data)
+    def test_create_vote_via_get(self, client):
+        for is_like in [True, False]:
+            url = reverse(
+                "like" if is_like else "dislike",
+                kwargs={"idea_id": self.ideas[0].id, "user_id": self.users[0].id},
+            )
+            response = client.get(url)
 
-        assert Vote.objects.count() == 0
-
-    def test_like(self, client):
-        url = reverse("vote")
-        data = {
-            "is_like": True,
-            "idea_id": self.ideas[0].id,
-            "user_id": self.users[0].id,
-        }
-        response = client.post(url, data)
-
-        assert Vote.objects.filter(is_like=True).count() == 1
-
-    def test_dislike(self, client):
-        url = reverse("vote")
-        data = {
-            "is_like": False,
-            "idea_id": self.ideas[0].id,
-            "user_id": self.users[0].id,
-        }
-        response = client.post(url, data)
-
-        assert Vote.objects.filter(is_like=False).count() == 1
+            assert Vote.objects.filter(is_like=is_like).count() == 1
 
     def test_reset_vote(self, client):
         for is_like in [True, False]:
@@ -225,15 +209,12 @@ class Test_vote:
             )
             assert Vote.objects.count() == 1
 
-            url = reverse("vote")
-            data = {
-                "is_like": is_like,
-                "idea_id": self.ideas[0].id,
-                "user_id": self.users[0].id,
-            }
-            response = client.post(url, data)
+            url = reverse(
+                "like" if is_like else "dislike",
+                kwargs={"idea_id": self.ideas[0].id, "user_id": self.users[0].id},
+            )
+            response = client.post(url)
 
-            assert Vote.objects.count() == 1
-            assert Vote.objects.first().is_like == None
+            assert Vote.objects.count() == 0
 
             vote.delete()

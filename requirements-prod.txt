@@ -8,6 +8,7 @@ asgiref==3.7.2
     # via
     #   -c constraint.txt
     #   django
+    #   django-htmx
 crispy-bootstrap5==2023.10
     # via
     #   -c constraint.txt
@@ -17,11 +18,16 @@ django==5.0.2
     #   -c constraint.txt
     #   crispy-bootstrap5
     #   django-crispy-forms
+    #   django-htmx
     #   ideahub (pyproject.toml)
 django-crispy-forms==2.1
     # via
     #   -c constraint.txt
     #   crispy-bootstrap5
+django-htmx==1.17.2
+    # via
+    #   -c constraint.txt
+    #   ideahub (pyproject.toml)
 gunicorn==21.2.0
     # via
     #   -c constraint.txt

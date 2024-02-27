@@ -1,9 +1,8 @@
 {% extends "ideahub/base.html" %}
 {% load crispy_forms_tags %}
-{% load ideas_extra %}
 
 {% block body %}
-<div class="container">
+<div class="container" id="ideas">
     <div class="row">
         <div class="col-12">
             <h1 class="display-3">Welcome, {{ user.name|title }}!</h1>
@@ -15,7 +14,10 @@
 
         <div>
             <h4>Submit an Idea:</h4>
-            <form method="post">
+            <form
+                hx-post="{% url 'submit_idea' user.id %}"
+                hx-target="#ideas"
+                hx-swap="outerHTML">
                 {% csrf_token %}
                 {{ idea_form|crispy }}
                 <button type="submit" class="btn btn-primary ml-2">Submit</button>
@@ -23,49 +25,10 @@
         </div>
 
         <div class="idea-container">
-            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
             <h4>Submitted Ideas:</h4>
 
             {% for idea in ideas %}
-            <div class="idea" data-idea-id="{{ idea.id }}">
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <h3 style="margin: 0;">{{ idea.title|title }}</h3>
-                        <small>Submitter: {{ idea.user.name|title }}</small>
-                    </div>
-                    <div>Score: {{ idea.score }}</div>
-                </div>
-
-                {% if idea.description %}
-                <br>
-                <div>{{ idea.description|linebreaks|urlize }}</div>
-                {% endif %}
-
-                <div class="votes">
-                    {% users_vote idea user as the_users_vote %}
-                    <form method='POST' action="vote">
-                        {% csrf_token %}
-                        <input type="hidden" name="idea_id" value="{{ idea.id }}">
-                        <input type="hidden" name="user_id" value="{{ user.id }}">
-                        <button type="submit" name="is_like" value="true" class="btn">
-                            <div class="circle-icon like-icon {% if the_users_vote is True %} chosen-vote{% endif %}">
-                                +
-                            </div>
-                        </button>
-                    </form>
-                    <form method='POST' action="vote">
-                        {% csrf_token %}
-                        <input type="hidden" name="idea_id" value="{{ idea.id }}">
-                        <input type="hidden" name="user_id" value="{{ user.id }}">
-                        <button type="submit" name="is_like" value="false" class="btn">
-                            <div
-                                class="circle-icon dislike-icon {% if the_users_vote is False %} chosen-vote{% endif %}">
-                                -
-                            </div>
-                        </button>
-                    </form>
-                </div>
-            </div>
+                {% include "ideahub/idea.html" with idea=idea user=user %}
             {% endfor %}
         </div>
     </div>

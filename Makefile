@@ -1,4 +1,4 @@
-reqs: constraint.txt requirements.txt requirements-dev.txt
+reqs: constraint.txt requirements.txt requirements-dev.txt requirements-prod.txt
 
 PIP_COMPILE_ARGS=--no-emit-index-url \
 	--constraint=constraint.txt \
